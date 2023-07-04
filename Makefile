@@ -44,6 +44,7 @@ visualize:
 # Clean generated data and model
 clean:
 	@echo "Cleaning up..."
+	rm -rf $(DATA_DIR)/raw/*
 	rm -rf $(DATA_DIR)/processed/*
 	rm -rf $(MODEL_DIR)/*
 	rm -rf reports/figures/*
