@@ -54,9 +54,14 @@ install:
 	@echo "Installing project dependencies..."
 	pip install -r requirements.txt
 
+# Check code style
+check:
+	@echo "Checking code style..."
+	flake8 src
+
 # Generate documentation
 docs:
 	@echo "Generating documentation..."
 	cd docs && make html
 
-.PHONY: all download extract data train predict visualize clean install docs
+.PHONY: all download extract data train predict visualize clean install docs check
