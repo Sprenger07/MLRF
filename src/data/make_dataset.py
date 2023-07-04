@@ -1,30 +1,30 @@
-# -*- coding: utf-8 -*-
-import click
-import logging
-from pathlib import Path
-from dotenv import find_dotenv, load_dotenv
+import pickle
+import pandas as pd
+
+def unpickle(file):
+    
+    with open(file, 'rb') as fo:
+        dict = pickle.load(fo, encoding='bytes')
+    return dict
+
+path = "data/raw/cifar-10-batches-py/"
 
 
-@click.command()
-@click.argument('input_filepath', type=click.Path(exists=True))
-@click.argument('output_filepath', type=click.Path())
-def main(input_filepath, output_filepath):
-    """ Runs data processing scripts to turn raw data from (../raw) into
-        cleaned data ready to be analyzed (saved in ../processed).
-    """
-    logger = logging.getLogger(__name__)
-    logger.info('making final data set from raw data')
+# Load the data
+
+for data_batch in ["data_batch_1", "data_batch_2", "data_batch_3", "data_batch_4", "data_batch_5"]:
+    batch = unpickle(path + data_batch)
+    data = batch[b'data']
+    labels = batch[b'labels']
 
 
-if __name__ == '__main__':
-    log_fmt = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-    logging.basicConfig(level=logging.INFO, format=log_fmt)
+df_train = pd.DataFrame(data)
+df_train['label'] = labels
+df_train.to_csv('data/processed/train.csv', index=False)
 
-    # not used in this stub but often useful for finding various files
-    project_dir = Path(__file__).resolve().parents[2]
 
-    # find .env automagically by walking up directories until it's found, then
-    # load up the .env entries as environment variables
-    load_dotenv(find_dotenv())
 
-    main()
+test_batch = unpickle(path + "test_batch")
+df_test = pd.DataFrame(test_batch[b'data'])
+df_test['label'] = test_batch[b'labels']
+df_test.to_csv('data/processed/test.csv', index=False)
