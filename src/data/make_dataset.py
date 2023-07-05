@@ -1,3 +1,4 @@
+import numpy as np
 import pickle
 import pandas as pd
 
@@ -11,15 +12,20 @@ def unpickle(file):
     return dict
 
 
+batch = unpickle(path + "data_batch_1")
+
+data = batch[b'data']
+labels = batch[b'labels']
+
+
 # Load the data
-for data_batch in ["data_batch_1",
-                   "data_batch_2",
+for data_batch in ["data_batch_2",
                    "data_batch_3",
                    "data_batch_4",
                    "data_batch_5"]:
     batch = unpickle(path + data_batch)
-    data = batch[b'data']
-    labels = batch[b'labels']
+    data = np.concatenate((data, batch[b'data']), axis=0)
+    labels = np.concatenate((labels, batch[b'labels']), axis=0)
 
 
 df_train = pd.DataFrame(data)
